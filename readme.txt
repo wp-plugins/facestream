@@ -13,8 +13,8 @@ http://www.opensource.org/licenses/gpl-license.php
 
 Facestream a Buddypress facebook intergration plugin.
 
-With this plugin you can synchronize your activity stream and your tweets.
-Also you can send a tweet upon forum topic creation and topic reply.
+With this plugin you can synchronize your activity stream and your facebook items
+Also you can send a update upon forum topic creation and topic reply.
 
 Everything is designed for easy-intergration, easy-setup and easy-usability.
 With a lots of admin and per user settings.
