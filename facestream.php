@@ -3,7 +3,7 @@
 Plugin Name: Facestream
 Plugin URI:
 Description: Synchronises facebook with activity stream and back.
-Version: 1.0.1.1
+Version: 1.0.1.2
 Author: Peter Hofman
 Author URI: http://www.faboo.nl
 */
@@ -22,7 +22,7 @@ Author URI: http://www.faboo.nl
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // **********************************************************************
 function facestream_init() {
-    require'facestream-functions.php';
+    require'facestream-functions.php';   
 }
 
 add_action( 'bp_init', 'facestream_init' );
@@ -45,6 +45,9 @@ function facestream_activation() {
 function facestream_cron() {
 
     global $wpdb;
+    
+    wp_schedule_single_event(time()+300, 'facestream_cron_event');    
+    
     // get all usermeta with facebook authorisation
     if(get_site_option('facestream_user_settings_syncbp')==0){
         $user_metas = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->usermeta WHERE meta_key='facestream_session_key';"));
@@ -54,9 +57,6 @@ function facestream_cron() {
             }
         }        
     }
-    
-    wp_schedule_single_event(time()+300, 'facestream_cron_event');    
-    
 }
 
 ?>

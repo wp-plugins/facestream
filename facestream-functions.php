@@ -6,7 +6,7 @@
 ##                                          ##
 ##############################################
 
-define ( 'BP_FACESTREAM_VERSION', '1.0.1.1' );
+define ( 'BP_FACESTREAM_VERSION', '1.0.1.2' );
 define ( 'BP_FACESTREAM_IS_INSTALLED', 1 );
 
 ##############################################
@@ -360,13 +360,6 @@ function facestream_facebookIt($content) {
 ##                                          ##
 ##############################################
 
-//add_action( 'bp_activity_screen_my_activity', 'facestream_getFacebook', 9 );
-//add_action( 'xprofile_screen_display_profile', 'facestream_getFacebook', 9 );
-//add_action( 'bp_blogs_screen_my_blogs', 'facestream_getFacebook', 9 );
-//add_action( 'bp_activity_screen_friends', 'facestream_getFacebook', 9 );
-//add_action( 'bp_activity_screen_groups', 'facestream_getFacebook', 9 );
-//add_action( 'bp_activity_screen_favorites', 'facestream_getFacebook', 9 );
-
 add_action( 'bp_activity_screen_my_activity', 'facestream_lightbox', 9 );
 add_action( 'xprofile_screen_display_profile', 'facestream_lightbox', 9 );
 add_action( 'bp_blogs_screen_my_blogs', 'facestream_lightbox', 9 );
@@ -379,11 +372,12 @@ function facestream_lightbox(){
     wp_enqueue_style( 'thickbox' );
 }
 
-
 function facestream_getFacebook($user_id='') {
 
     global $bp,$wpdb;
 
+    require_once("facebook/facebook.php");
+    
     //allowed to import at all?
     if(get_site_option('facestream_user_settings_syncbp')==0){
 
@@ -429,12 +423,12 @@ function facestream_getFacebook($user_id='') {
                         $session_key = get_usermeta ( $user_id, 'facestream_session_key' );
                         $facestream_userid = get_usermeta ( $user_id, 'facestream_userid' );
                         
-                        require_once("facebook/facebook.php");
+                        
                         $fb = new Facebook(get_site_option("facestream_api_key"),get_site_option("facestream_application_secret"));
                         $fb->api_client->session_key = $session_key;
 
                         //get users items
-                        $stream = $fb->api_client->stream_get();
+                        $stream = $fb->api_client->stream_get($facestream_userid,$facestream_userid);
                         $items = $stream['posts'];
 
                         //get admin filters
@@ -444,10 +438,11 @@ function facestream_getFacebook($user_id='') {
                         //get user filters
                         $user_filtergood = get_usermeta ( $user_id, 'facestream_filtergood' );
                         $user_filterbad = get_usermeta ( $user_id, 'facestream_filterbad' );
-
+                        
+                        
                         if ($items) {
                             foreach ( $items as $item ) {
-
+                                
                                 //set defaults
                                 $filter_pass = 1;
                                 $exist 	     = 0;
@@ -584,25 +579,29 @@ function facestream_getFacebook($user_id='') {
 
                                 }
 
-
                                 //item public
                                 if($item['privacy']['value']!="EVERYONE"){
                                     $filter_pass = 0;
                                 }
 
+                                
+                                
+                                
                                 //type filtering
                                 if($filter_pass == 1){
 
+                                    
                                     //check if we already have this item
                                     $activity_info = bp_activity_get( array( 'filter' => array( 'secondary_id' => $item['post_id'])));
                                     if($activity_info['activities'][0]->id){
                                         $exist =1;
                                     }
-
+ 
                                     if($item['app_id']!=''){
                                         $exist = 1;
                                     }
-
+                                    
+                                    
                                     //new activity!
                                     if ($exist == 0 ) {
 
@@ -1200,8 +1199,6 @@ function facestream_resolveShortUrl($url){
         }
     }
 }
-
-
 
 
 //add styles
