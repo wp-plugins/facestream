@@ -379,8 +379,6 @@ function facestream_runCron(){
 	$last_update = get_site_option('facestream_cron');
 	$now = date('dmYhmi');
 	$date_diff = $now-$last_update;
-	
-	$date_diff = 5;
 
 	if($date_diff >= 5){
 		
