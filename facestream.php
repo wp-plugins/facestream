@@ -3,7 +3,7 @@
 Plugin Name: Facestream
 Plugin URI:
 Description: Synchronises facebook with activity stream and back.
-Version: 1.0.1.2
+Version: 1.0.2
 Author: Peter Hofman
 Author URI: http://www.faboo.nl
 */
