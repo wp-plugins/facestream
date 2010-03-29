@@ -33,7 +33,7 @@
 
 include_once 'facebookapi_php5_restlib.php';
 
-define('FACEBOOK_API_VALIDATION_ERROR', 1);
+define('FACEBOOK_API_VALIDATION_ERROR', 0);
 class Facebook {
   public $api_client;
   public $api_key;

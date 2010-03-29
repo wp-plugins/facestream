@@ -164,7 +164,7 @@ function toggleDisplay(id, type) {
     if ($this->pending_batch()) {
       $code = FacebookAPIErrorCodes::API_EC_BATCH_ALREADY_STARTED;
       $description = FacebookAPIErrorCodes::$api_error_descriptions[$code];
-      throw new FacebookRestClientException($description, $code);
+      //throw new FacebookRestClientException($description, $code);
     }
 
     $this->batch_queue = array();
@@ -179,7 +179,7 @@ function toggleDisplay(id, type) {
     if (!$this->pending_batch()) {
       $code = FacebookAPIErrorCodes::API_EC_BATCH_NOT_STARTED;
       $description = FacebookAPIErrorCodes::$api_error_descriptions[$code];
-      throw new FacebookRestClientException($description, $code);
+      //throw new FacebookRestClientException($description, $code);
     }
 
     $read_only = $this->pending_batch_is_read_only;
@@ -216,8 +216,8 @@ function toggleDisplay(id, type) {
     $result = $this->call_method('facebook.batch.run', $params, $read_only);
 
     if (is_array($result) && isset($result['error_code'])) {
-      throw new FacebookRestClientException($result['error_msg'],
-                                            $result['error_code']);
+      //throw new FacebookRestClientException($result['error_msg'],
+//                                            $result['error_code']);
     }
 
     for ($i = 0; $i < $item_count; $i++) {
@@ -229,8 +229,8 @@ function toggleDisplay(id, type) {
 
       if (is_array($batch_item_result) &&
           isset($batch_item_result['error_code'])) {
-        throw new FacebookRestClientException($batch_item_result['error_msg'],
-                                              $batch_item_result['error_code']);
+        //throw new FacebookRestClientException($batch_item_result['error_msg'],
+                                          //    $batch_item_result['error_code']);
       }
       $batch_item['r'] = $batch_item_result;
     }
@@ -3371,8 +3371,8 @@ function toggleDisplay(id, type) {
       $this->rawData = $data;
       $result = $this->convert_result($data, $method, $params);
       if (is_array($result) && isset($result['error_code'])) {
-        throw new FacebookRestClientException($result['error_msg'],
-                                              $result['error_code']);
+        //throw new FacebookRestClientException($result['error_msg'],
+          //                                    $result['error_code']);
       }
     } else {
       $result = null;
@@ -3446,7 +3446,7 @@ function toggleDisplay(id, type) {
         $code =
           FacebookAPIErrorCodes::API_EC_PARAM;
         $description = FacebookAPIErrorCodes::$api_error_descriptions[$code];
-        throw new FacebookRestClientException($description, $code);
+        //throw new FacebookRestClientException($description, $code);
       }
 
       if ($this->format) {
@@ -3459,15 +3459,15 @@ function toggleDisplay(id, type) {
       $result = $this->convert_result($data, $method, $params);
 
       if (is_array($result) && isset($result['error_code'])) {
-        throw new FacebookRestClientException($result['error_msg'],
-                                              $result['error_code']);
+        //throw new FacebookRestClientException($result['error_msg'],
+          //                                    $result['error_code']);
       }
     }
     else {
       $code =
         FacebookAPIErrorCodes::API_EC_BATCH_METHOD_NOT_ALLOWED_IN_BATCH_MODE;
       $description = FacebookAPIErrorCodes::$api_error_descriptions[$code];
-      throw new FacebookRestClientException($description, $code);
+      //throw new FacebookRestClientException($description, $code);
     }
 
     return $result;
