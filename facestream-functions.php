@@ -6,7 +6,7 @@
 ##                                          ##
 ##############################################
 
-define ( 'BP_FACESTREAM_VERSION', '1.0.2' );
+define ( 'BP_FACESTREAM_VERSION', '1.0.2.1' );
 define ( 'BP_FACESTREAM_IS_INSTALLED', 1 );
 
 ##############################################
@@ -380,6 +380,8 @@ function facestream_runCron(){
 	$now = date('dmYhmi');
 	$date_diff = $now-$last_update;
 	
+	$date_diff = 5;
+
 	if($date_diff >= 5){
 		
 		// get all usermeta with facebook authorisation
@@ -411,14 +413,11 @@ function facestream_getFacebook($user_id) {
 		$user_login      = $user_data[0]->user_login;
 		$user_fullname   = bp_core_get_user_displayname($user_id);
 		
-		//get usermeta
-		$user_meta     = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->usermeta WHERE user_id=$user_id;"));
-		
 		//is there a maximum inport
 		$max_reached = 0;
 		$max_import = get_site_option('facestream_user_settings_maximport');
 		if($max_import!=''){
-			if($user_meta->facestream_daycounter>=$max_import){
+			if(get_usermeta ( $user_id, 'facestream_daycounter>=$max_import')){
 				$max_reached = 1;
 			}
 			else{
@@ -429,27 +428,34 @@ function facestream_getFacebook($user_id) {
 		if($max_reached==0){
 
 			//check if user has filled in a facebook
-			if (get_usermeta ( $user_id, 'facestream_session_key' )) {
-				if(get_usermeta ( $user_id, 'facestream_synctoac' )==1){
+			if (get_usermeta ( $user_id, 'facestream_session_key')) {
+				if(get_usermeta ( $user_id, 'facestream_synctoac')==1){
 
 					//facebook object
-					$session_key = $user_meta->facestream_session_key;
-					$facestream_userid = $user_meta->facestream_userid;
+					$session_key = get_usermeta ( $user_id, 'facestream_session_key');
+					$facestream_userid = get_usermeta ( $user_id, 'facestream_userid');
 
+					echo "sk:".$session_key."<hr>";
+					
 					$fb = new Facebook(get_site_option("facestream_api_key"),get_site_option("facestream_application_secret"));
 					$fb->api_client->session_key = $session_key;
 					
 					//get users items
-					$stream = $fb->api_client->stream_get($facestream_userid,$facestream_userid,'','','',10);
+					$stream = $fb->api_client->stream_get($facestream_userid,$facestream_userid);
+					
+					echo "stream";
+					print_r($stream);
+					
 					$items = $stream['posts'];
-
+					die();
+					
 					//get admin filters
 					$admin_filter = get_site_option('facestream_filter');
 					$admin_filterexplicit = get_site_option('facestream_filterexplicit');
 
 					//get user filters
-					$user_filtergood = $user_meta->facestream_filtergood;
-					$user_filterbad = $user_meta->facestream_filterbad;
+					$user_filtergood = get_usermeta ( $user_id, 'facestream_filtergood');
+					$user_filterbad = get_usermeta ( $user_id, 'facestream_filterbad');
 
 					if ($items) {
 						foreach ( $items as $item ) {
@@ -528,7 +534,7 @@ function facestream_getFacebook($user_id) {
 							}
 
 							//mentions filtering
-							if($user_meta->facestream_filtermentions==1 && $filter_pass==1){
+							if(get_usermeta ( $user_id, 'facestream_filtermentions')==1 && $filter_pass==1){
 								$pattern = '/[@]+([A-Za-z0-9-_]+)/';
 								$found_mention = preg_match( $pattern, $item_text );
 
@@ -540,25 +546,25 @@ function facestream_getFacebook($user_id) {
 							//are we allowed to import this item type
 							//from user
 							if($item['type']==46){
-								if($user_meta->facestream_syncupdatestoac==1){
+								if(get_usermeta ( $user_id, 'facestream_syncupdatestoac')==1){
 									$filter_pass = 0;
 								}
 							}
 
 							elseif($item['type']==80){
-								if($user_meta->facestream_synclinkstoac==1){
+								if(get_usermeta ( $user_id, 'facestream_synclinkstoac')==1){
 									$filter_pass = 0;
 								}
 							}
 
 							elseif($item['type']==247){
-								if($user_meta->facestream_syncphotostoac==1){
+								if(get_usermeta ( $user_id, 'facestream_syncphotostoac')==1){
 									$filter_pass = 0;
 								}
 							}
 
 							elseif($item['type']==128){
-								if($user_meta->facestream_syncvideostoac==1){
+								if(get_usermeta ( $user_id, 'facestream_syncvideostoac')==1){
 									$filter_pass = 0;
 								}
 							}
@@ -663,13 +669,13 @@ function facestream_getFacebook($user_id) {
 									$activity->save ();
 
 									//update day counter
-									if($user_meta->facestream_counterdate!=date('d-m-Y'))
+									if(get_usermeta ( $user_id, 'facestream_counterdate')!=date('d-m-Y'))
 									{
 										update_usermeta ((int) $user_id, 'facestream_daycounter',0);
 										update_usermeta ( ( int ) $user_id, 'facestream_counterdate',date('d-m-Y'));
 									}
 
-									$cur_counter = $user_meta->facestream_daycounter;
+									$cur_counter = get_usermeta ( $user_id, 'facestream_daycounter');
 									update_usermeta ( ( int ) $user_id, 'facestream_daycounter',$cur_counter+1);
 								}
 							}
