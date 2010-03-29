@@ -435,19 +435,14 @@ function facestream_getFacebook($user_id) {
 					$session_key = get_usermeta ( $user_id, 'facestream_session_key');
 					$facestream_userid = get_usermeta ( $user_id, 'facestream_userid');
 
-					echo "sk:".$session_key."<hr>";
 					
 					$fb = new Facebook(get_site_option("facestream_api_key"),get_site_option("facestream_application_secret"));
 					$fb->api_client->session_key = $session_key;
 					
 					//get users items
 					$stream = $fb->api_client->stream_get($facestream_userid,$facestream_userid);
-					
-					echo "stream";
-					print_r($stream);
-					
 					$items = $stream['posts'];
-					die();
+					
 					
 					//get admin filters
 					$admin_filter = get_site_option('facestream_filter');
