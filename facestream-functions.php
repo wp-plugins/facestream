@@ -6,7 +6,7 @@
 ##                                          ##
 ##############################################
 
-define ( 'BP_FACESTREAM_VERSION', '1.0.2.1' );
+define ( 'BP_FACESTREAM_VERSION', '1.0.3' );
 define ( 'BP_FACESTREAM_IS_INSTALLED', 1 );
 
 ##############################################
@@ -357,12 +357,7 @@ function facestream_facebookIt($content) {
 ##                                          ##
 ##############################################
 
-add_action( 'bp_activity_screen_my_activity', 'facestream_lightbox', 9 );
-add_action( 'xprofile_screen_display_profile', 'facestream_lightbox', 9 );
-add_action( 'bp_blogs_screen_my_blogs', 'facestream_lightbox', 9 );
-add_action( 'bp_activity_screen_friends', 'facestream_lightbox', 9 );
-add_action( 'bp_activity_screen_groups', 'facestream_lightbox', 9 );
-add_action( 'bp_activity_screen_favorites', 'facestream_lightbox', 9 );
+add_action( 'wp', 'facestream_lightbox', 9 );
 
 function facestream_lightbox(){
 	wp_enqueue_script( 'thickbox' );
@@ -376,12 +371,19 @@ function facestream_runCron(){
 	global $wpdb,$bp;
 
 	//every 5 minutes we need to update
+	$cron_run = 0;
 	$last_update = get_site_option('facestream_cron');
 	$now = date('dmYhmi');
-	$date_diff = $now-$last_update;
-
-	if($date_diff >= 5){
+	$date_diff = $last_update-$now;
 		
+	//may we run the cron?
+    if( $date_diff <= -5){
+        $cron_run = 1;
+    }elseif ($date_diff >= 5){
+        $cron_run = 1;
+    }
+    
+	if($cron_run == 1){
 		// get all usermeta with facebook authorisation
 		if(get_site_option('facestream_user_settings_syncbp')==0){
 			$user_metas = $wpdb->get_results($wpdb->prepare("SELECT user_id FROM $wpdb->usermeta WHERE meta_key='facestream_session_key';"));

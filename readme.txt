@@ -4,7 +4,7 @@ Tags: Buddypress, Facebook,Facestream
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TKBY4JM6WDSD2
 Requires at least: WP 2.9.1, BuddyPress 1.2.3
 Tested up to: WP 2.9.2, BuddyPress 1.2.3
-Stable tag: 1.0.2.1
+Stable tag: 1.0.3
 
 == Released under the GPL license ==
 http://www.opensource.org/licenses/gpl-license.php
@@ -44,7 +44,6 @@ The plugin got full localisation support.
 3. Setup the facestream plugin in the admin.
 4. Done!
 
-
 !!! Please deactivate en re-activate the plugin after every upgrading to newest release!!!
 
 Requirements.
@@ -53,6 +52,10 @@ Requirements.
 - JSON
 
 == ChangeLog ==
+
+= 1.0.2.2 = 
+* Fixed importing
+* Fixed lightbox for facebook photo's
 
 = 1.0.2.1 =
 * Forgot to turn on the new cron, sorry
