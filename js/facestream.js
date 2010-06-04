@@ -9,7 +9,7 @@ jQuery('#aw-whats-new-submit').click(function() {
 	}
 });
 
-
+jQuery(document).ready(function() {
 jQuery('#forum-topic-form').submit(function() {
   
 if(jQuery('#topic_to_facebook').attr('checked') == true)
@@ -28,4 +28,6 @@ if(jQuery('#topic_to_facebook').attr('checked') == true)
 		jQuery('#reply_text').val(content);
 	}
     
+});
+
 });
