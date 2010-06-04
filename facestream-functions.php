@@ -454,7 +454,7 @@ function facestream_runCron(){
 //                  //
 //////////////////////
 
-function filterText($text,$filters){
+function facestream_filterText($text,$filters){
 
     $return = 0;
     $text =  strip_tags($text);
@@ -551,10 +551,10 @@ function facestream_getFacebook($user_id) {
                             $activity = new BP_Activity_Activity();
 
                             //lets make something better for filters to cleanup code
-                            $filter1 = filterText($tweet_text,get_site_option('facestream_filter'));
-                            $filter2 = filterText($tweet_text,get_site_option('facestream_filterexplicit'));
-                            $filter3 = filterText($tweet_text,get_usermeta($user_id,'facestream_filtergood'));
-                            $filter4 = filterText($tweet_text,get_usermeta($user_id,'facestream_filterbad'));
+                            $filter1 = facestream_filterText($tweet_text,get_site_option('facestream_filter'));
+                            $filter2 = facestream_filterText($tweet_text,get_site_option('facestream_filterexplicit'));
+                            $filter3 = facestream_filterText($tweet_text,get_usermeta($user_id,'facestream_filtergood'));
+                            $filter4 = facestream_filterText($tweet_text,get_usermeta($user_id,'facestream_filterbad'));
 
                             $filter_pass = 0;
                             if($filter1==1 or $filter1 == 2){$filter_pass = 1;}
@@ -950,8 +950,6 @@ function facestream_settings_screen_content() {
     unset($facestream_filtermentions);
     unset($facestream_filtergood);
     unset($facestream_filterbad);
-
-
 
 }
 
